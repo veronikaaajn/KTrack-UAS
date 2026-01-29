@@ -1,0 +1,2994 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>K-Track - Drama Korea Tracker</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* ==================== VARIABLES & RESET ==================== */
+        :root {
+            --primary: #16476A;
+            --secondary: #80A1BA;
+            --success: #FF5555;
+            --danger: #BF1A1A;
+            --light-bg: #ffffff;
+            --dark-bg: #000000;
+            --light-text: #333333;
+            --dark-text: #ffffff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--light-bg);
+            color: var(--light-text);
+            transition: all 0.3s ease;
+        }
+
+        body.dark-mode {
+            background-color: var(--dark-bg);
+            color: var(--dark-text);
+        }
+
+        /* ==================== AUTHENTICATION PAGES ==================== */
+        .auth-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        }
+
+        body.dark-mode .auth-container {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+        }
+
+        .auth-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            padding: 40px;
+            width: 100%;
+            max-width: 450px;
+            transition: all 0.3s ease;
+        }
+
+        body.dark-mode .auth-card {
+            background: #1a1a1a;
+            color: var(--dark-text);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .auth-logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .auth-logo img {
+            max-width: 120px;
+            height: auto;
+        }
+
+        .auth-title {
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 10px;
+            font-size: 1.8rem;
+        }
+
+        body.dark-mode .auth-title {
+            color: var(--secondary);
+        }
+
+        .auth-subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1rem;
+        }
+
+        body.dark-mode .auth-subtitle {
+            color: #aaa;
+        }
+
+        .auth-form .form-label {
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        .auth-form .form-control {
+            padding: 12px 15px;
+            border-radius: 10px;
+            border: 2px solid #e0e0e0;
+            transition: all 0.3s ease;
+        }
+
+        body.dark-mode .auth-form .form-control {
+            background-color: #2d2d2d;
+            border-color: #444;
+            color: var(--dark-text);
+        }
+
+        .auth-form .form-control:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 0.2rem rgba(22, 71, 106, 0.25);
+        }
+
+        .auth-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 10px;
+            font-weight: 600;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+
+        .auth-btn:hover {
+            background-color: var(--secondary);
+            transform: translateY(-2px);
+        }
+
+        .auth-footer {
+            text-align: center;
+            margin-top: 20px;
+            color: #666;
+        }
+
+        body.dark-mode .auth-footer {
+            color: #aaa;
+        }
+
+        .auth-link {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        body.dark-mode .auth-link {
+            color: var(--secondary);
+        }
+
+        .auth-link:hover {
+            text-decoration: underline;
+        }
+
+        /* ==================== MAIN APPLICATION ==================== */
+        #mainApp {
+            display: none;
+        }
+
+        /* Header & Navbar */
+        .navbar {
+            background-color: var(--primary) !important;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.8rem;
+            color: white !important;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .navbar-brand i {
+            font-size: 1.8rem;
+        }
+
+        .nav-link {
+            color: white !important;
+            margin: 0 0.8rem;
+            font-weight: 500;
+            transition: color 0.3s;
+            position: relative;
+        }
+
+        .nav-link:hover {
+            color: var(--secondary) !important;
+        }
+
+        .nav-link.active {
+            color: white !important;
+            font-weight: 600;
+        }
+
+        .nav-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background-color: white;
+            border-radius: 2px;
+        }
+
+        /* Navbar positioning to center */
+        .navbar-nav.mx-auto {
+            display: flex;
+            justify-content: center;
+            width: 100%;
+            max-width: 600px;
+        }
+
+        .navbar-nav {
+            flex-wrap: nowrap;
+        }
+
+        .nav-item {
+            flex-shrink: 0;
+        }
+
+        /* User Profile in Navbar */
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .profile-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        /* Theme Toggle */
+        .theme-toggle {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: transform 0.3s;
+            padding: 5px;
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.1);
+        }
+
+        /* Badge Styles */
+        .feature-badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+        
+        .badge-free {
+            background-color: #28a745;
+            color: white;
+        }
+        
+        .badge-premium {
+            background: linear-gradient(45deg, #FFD700, #FFA500);
+            color: #333;
+        }
+        
+        .badge-expiring {
+            background-color: #ffc107;
+            color: #333;
+        }
+
+        /* Main Container */
+        .main-container {
+            min-height: calc(100vh - 200px);
+            padding: 2rem 0;
+        }
+
+        /* Section Titles */
+        .section-title {
+            font-weight: 600;
+            color: var(--primary);
+            margin: 0 0 2rem 0;
+            font-size: 1.8rem;
+            padding-bottom: 10px;
+            border-bottom: 3px solid var(--primary);
+            display: inline-block;
+        }
+
+        body.dark-mode .section-title {
+            color: var(--secondary);
+            border-bottom-color: var(--secondary);
+        }
+
+        /* Cards */
+        .drama-card {
+            border: none;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            margin-bottom: 2rem;
+            cursor: pointer;
+            height: 100%;
+        }
+
+        body.dark-mode .drama-card {
+            background-color: #1a1a1a;
+            color: var(--dark-text);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+
+        .drama-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        body.dark-mode .drama-card:hover {
+            box-shadow: 0 8px 25px rgba(0,0,0,0.5);
+        }
+
+        .drama-card img {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+        }
+
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        /* Status Badges */
+        .status-badge {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-bottom: 1rem;
+        }
+
+        .status-watching {
+            background-color: var(--success);
+            color: white;
+        }
+
+        .status-completed {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .status-plan {
+            background-color: var(--secondary);
+            color: white;
+        }
+
+        /* Progress Bars */
+        .progress {
+            height: 8px;
+            border-radius: 10px;
+            margin: 1rem 0;
+            background-color: #e9ecef;
+        }
+
+        body.dark-mode .progress {
+            background-color: #444;
+        }
+
+        /* Ratings */
+        .rating {
+            color: #ffc107;
+            font-size: 1.2rem;
+            margin: 0.5rem 0;
+        }
+
+        /* Genre Tags */
+        .genre-tag {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            background-color: #e9ecef;
+            border-radius: 10px;
+            font-size: 0.8rem;
+            margin: 0.2rem 0.2rem 0.5rem 0;
+            color: #495057;
+        }
+
+        body.dark-mode .genre-tag {
+            background-color: #333;
+            color: #ddd;
+        }
+
+        /* Horizontal Scroll */
+        .scroll-container {
+            display: flex;
+            overflow-x: auto;
+            gap: 1.5rem;
+            padding: 1rem 0;
+            scroll-behavior: smooth;
+            margin-bottom: 2rem;
+        }
+
+        .scroll-container::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        .scroll-container::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        body.dark-mode .scroll-container::-webkit-scrollbar-track {
+            background: #333;
+        }
+
+        .scroll-container::-webkit-scrollbar-thumb {
+            background: var(--secondary);
+            border-radius: 10px;
+        }
+
+        .scroll-card {
+            min-width: 250px;
+            flex-shrink: 0;
+        }
+
+        /* Buttons */
+        .btn-primary {
+            background-color: var(--primary);
+            border: none;
+            padding: 0.5rem 1.5rem;
+            border-radius: 10px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--secondary);
+            transform: translateY(-2px);
+        }
+
+        .btn-outline-primary {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-outline-primary:hover {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        /* Footer */
+        .footer {
+            background-color: var(--primary);
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+            margin-top: 3rem;
+        }
+
+        .footer a {
+            color: white;
+            text-decoration: none;
+            margin: 0 0.5rem;
+        }
+
+        .footer a:hover {
+            color: var(--secondary);
+            text-decoration: underline;
+        }
+
+        /* Page Content */
+        .page-content {
+            display: none;
+        }
+
+        .page-content.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Stats Cards */
+        .stats-card {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 2rem;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .stats-card h3 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Premium Features Section */
+        .premium-features {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 15px;
+            margin-top: 2rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+        }
+
+        .premium-features h4 {
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+        }
+
+        .premium-feature-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding: 1rem;
+            border-radius: 10px;
+            background: rgba(255,255,255,0.1);
+        }
+
+        .premium-icon {
+            width: 40px;
+            height: 40px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            color: #764ba2;
+            flex-shrink: 0;
+        }
+
+        .premium-btn {
+            background: linear-gradient(45deg, #FFD700, #FFA500);
+            color: #333;
+            border: none;
+            font-weight: 600;
+            padding: 0.75rem 1.5rem;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .premium-btn:hover {
+            background: linear-gradient(45deg, #FFA500, #FFD700);
+            color: #333;
+            transform: translateY(-2px);
+        }
+
+        /* Pricing Cards */
+        .pricing-card {
+            border: none;
+            border-radius: 15px;
+            overflow: hidden;
+            text-align: center;
+            transition: transform 0.3s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            height: 100%;
+        }
+
+        .pricing-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .pricing-header {
+            padding: 2rem;
+            color: white;
+        }
+
+        .pricing-free .pricing-header {
+            background: linear-gradient(135deg, #28a745, #20c997);
+        }
+
+        .pricing-premium .pricing-header {
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+        }
+
+        .pricing-body {
+            padding: 2rem;
+        }
+
+        .price {
+            font-size: 3rem;
+            font-weight: 700;
+            margin: 1rem 0;
+        }
+
+        .price small {
+            font-size: 1rem;
+            color: rgba(255,255,255,0.8);
+        }
+
+        /* File Upload */
+        .file-upload-preview {
+            width: 100%;
+            height: 200px;
+            border: 2px dashed #ddd;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 10px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: border-color 0.3s;
+        }
+
+        .file-upload-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .file-upload-preview:hover {
+            border-color: var(--primary);
+        }
+
+        /* Expiry Notification */
+        .expiry-notification {
+            background: linear-gradient(45deg, #ff9966, #ff5e62);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            animation: pulse 2s infinite;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(255, 94, 98, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(255, 94, 98, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 94, 98, 0); }
+        }
+
+        .subscription-info {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .subscription-timer {
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-align: center;
+            margin: 10px 0;
+            padding: 10px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 10px;
+        }
+
+        /* Dropdown Menu */
+        .dropdown-menu {
+            border-radius: 10px;
+            border: none;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            padding: 10px;
+        }
+
+        body.dark-mode .dropdown-menu {
+            background-color: #2d2d2d;
+            color: var(--dark-text);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .dropdown-item {
+            padding: 8px 15px;
+            border-radius: 5px;
+            transition: all 0.2s;
+        }
+
+        .dropdown-item:hover {
+            background-color: #f0f0f0;
+        }
+
+        body.dark-mode .dropdown-item:hover {
+            background-color: #3d3d3d;
+        }
+
+        /* Search Box */
+        .search-box {
+            max-width: 500px;
+            margin: 2rem auto;
+        }
+
+        .search-box .form-control {
+            border-radius: 25px;
+            padding: 12px 20px;
+            border: 2px solid #e0e0e0;
+        }
+
+        body.dark-mode .search-box .form-control {
+            background-color: #2d2d2d;
+            border-color: #444;
+            color: var(--dark-text);
+        }
+
+        /* Modal Styling */
+        .modal-content {
+            border-radius: 15px;
+            border: none;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        body.dark-mode .modal-content {
+            background-color: #1a1a1a;
+            color: var(--dark-text);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        /* Alert Boxes */
+        .alert {
+            border-radius: 10px;
+            border: none;
+            padding: 1rem 1.5rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 1rem;
+            }
+            
+            .navbar-brand {
+                font-size: 1.5rem;
+            }
+            
+            .navbar-nav.mx-auto {
+                flex-direction: column;
+                text-align: center;
+                padding: 1rem 0;
+            }
+            
+            .nav-item {
+                margin: 0.3rem 0;
+            }
+            
+            .nav-link {
+                margin: 0;
+            }
+            
+            .drama-card img {
+                height: 250px;
+            }
+            
+            .section-title {
+                font-size: 1.5rem;
+            }
+            
+            .stats-card h3 {
+                font-size: 2rem;
+            }
+            
+            .premium-feature-item {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .premium-icon {
+                margin-right: 0;
+                margin-bottom: 1rem;
+            }
+            
+            .user-profile {
+                flex-direction: column;
+                gap: 10px;
+                margin-top: 1rem;
+            }
+            
+            .scroll-container {
+                gap: 1rem;
+            }
+            
+            .scroll-card {
+                min-width: 200px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .auth-card {
+                padding: 30px 20px;
+            }
+            
+            .auth-title {
+                font-size: 1.5rem;
+            }
+            
+            .pricing-card {
+                margin-bottom: 1.5rem;
+            }
+            
+            .expiry-notification {
+                flex-direction: column;
+                text-align: center;
+                gap: 10px;
+            }
+            
+            .subscription-info {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Authentication Pages (Hidden when logged in) -->
+    <div id="authPages">
+        <!-- Login Page -->
+        <div class="auth-container" id="loginPage">
+            <div class="auth-card">
+                <div class="auth-logo">
+                    <div style="margin: 0 auto 20px; background: linear-gradient(135deg, #16476A, #80A1BA); width: 100px; height: 100px; border-radius: 20px; display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-tv" style="font-size: 3rem; color: white;"></i>
+                    </div>
+                    <h1 class="auth-title">K-Track</h1>
+                    <p class="auth-subtitle">Track your K-Drama journey</p>
+                </div>
+                
+                <form class="auth-form" id="loginForm">
+                    <div class="mb-3">
+                        <label class="form-label">Email Address</label>
+                        <input type="email" class="form-control" id="loginEmail" placeholder="Enter your email" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Password</label>
+                        <input type="password" class="form-control" id="loginPassword" placeholder="Enter your password" required>
+                    </div>
+                    
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="rememberMe">
+                        <label class="form-check-label" for="rememberMe">Remember me</label>
+                    </div>
+                    
+                    <button type="submit" class="auth-btn mb-3">Sign In</button>
+                    
+                    <div class="auth-footer">
+                        <p>Don't have an account? <a href="#" class="auth-link" onclick="showRegisterPage()">Sign Up</a></p>
+                        <p><a href="#" class="auth-link" onclick="showForgotPasswordPage()">Forgot Password?</a></p>
+                        <p class="mt-3 text-muted"><small>Demo: admin@ktrack.com / password</small></p>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Register Page -->
+        <div class="auth-container" id="registerPage" style="display: none;">
+            <div class="auth-card">
+                <div class="auth-logo">
+                    <div style="margin: 0 auto 20px; background: linear-gradient(135deg, #16476A, #80A1BA); width: 100px; height: 100px; border-radius: 20px; display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-user-plus" style="font-size: 3rem; color: white;"></i>
+                    </div>
+                    <h1 class="auth-title">Create Account</h1>
+                    <p class="auth-subtitle">Start tracking your K-Drama journey</p>
+                </div>
+                
+                <form class="auth-form" id="registerForm">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">First Name</label>
+                            <input type="text" class="form-control" id="firstName" placeholder="John" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Last Name</label>
+                            <input type="text" class="form-control" id="lastName" placeholder="Doe" required>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Email Address</label>
+                        <input type="email" class="form-control" id="registerEmail" placeholder="john@example.com" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Password</label>
+                        <input type="password" class="form-control" id="registerPassword" placeholder="At least 8 characters" required minlength="8">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Confirm Password</label>
+                        <input type="password" class="form-control" id="confirmPassword" placeholder="Confirm your password" required minlength="8">
+                    </div>
+                    
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="agreeTerms" required>
+                        <label class="form-check-label" for="agreeTerms">I agree to the <a href="#" class="auth-link">Terms of Service</a> and <a href="#" class="auth-link">Privacy Policy</a></label>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="planType" id="planFree" value="free" checked>
+                            <label class="form-check-label" for="planFree">
+                                <strong>Free Plan</strong> - Basic tracking features
+                                <br><small>Registrasi gratis, dashboard, pencatatan drama dasar</small>
+                            </label>
+                        </div>
+                        <div class="form-check mt-2">
+                            <input class="form-check-input" type="radio" name="planType" id="planPremium" value="premium">
+                            <label class="form-check-label" for="planPremium">
+                                <strong>Premium Plan</strong> - Full features
+                                <br><small>Cloud sync, mood journal, advanced analytics, dan lebih banyak fitur</small>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="auth-btn mb-3">Create Account</button>
+                    
+                    <div class="auth-footer">
+                        <p>Already have an account? <a href="#" class="auth-link" onclick="showLoginPage()">Sign In</a></p>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Forgot Password Page -->
+        <div class="auth-container" id="forgotPasswordPage" style="display: none;">
+            <div class="auth-card">
+                <div class="auth-logo">
+                    <div style="margin: 0 auto 20px; background: linear-gradient(135deg, #16476A, #80A1BA); width: 100px; height: 100px; border-radius: 20px; display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-key" style="font-size: 3rem; color: white;"></i>
+                    </div>
+                    <h1 class="auth-title">Reset Password</h1>
+                    <p class="auth-subtitle">Enter your email to reset password</p>
+                </div>
+                
+                <form class="auth-form" id="forgotPasswordForm">
+                    <div class="mb-3">
+                        <label class="form-label">Email Address</label>
+                        <input type="email" class="form-control" id="resetEmail" placeholder="Enter your email" required>
+                    </div>
+                    
+                    <button type="submit" class="auth-btn mb-3">Send Reset Link</button>
+                    
+                    <div class="auth-footer">
+                        <p><a href="#" class="auth-link" onclick="showLoginPage()">Back to Sign In</a></p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Application (Hidden until login) -->
+    <div id="mainApp" style="display: none;">
+        <!-- Header with Navbar -->
+        <nav class="navbar navbar-expand-lg">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#" onclick="showPage('home')">
+                    <i class="fas fa-tv"></i> K-Track
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav mx-auto">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="#" onclick="showPage('home')">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" onclick="showPage('watchlog')">Watchlog</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" onclick="showPage('categories')">Categories</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" onclick="showPage('reviews')">Reviews</a>
+                        </li>
+                    </ul>
+                    
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="user-profile">
+                            <div class="profile-avatar" id="userAvatar"></div>
+                            <div class="dropdown">
+                                <button class="btn btn-light dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                    <span id="userName">User</span>
+                                    <span class="feature-badge" id="userPlanBadge" style="margin-left: 5px;"></span>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end">
+                                    <li><a class="dropdown-item" href="#" onclick="showPage('profile')"><i class="fas fa-user me-2"></i>Profile</a></li>
+                                    <li><a class="dropdown-item" href="#" onclick="showPage('settings')"><i class="fas fa-cog me-2"></i>Settings</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item" href="#" onclick="showUpgradeModal()"><i class="fas fa-crown me-2"></i>Upgrade to Premium</a></li>
+                                    <li><a class="dropdown-item" href="#" onclick="showSubscriptionModal()"><i class="fas fa-calendar-alt me-2"></i>Subscription Info</a></li>
+                                    <li><a class="dropdown-item" href="#" onclick="downgradeToFree()"><i class="fas fa-arrow-down me-2"></i>Downgrade to Free</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item" href="#" onclick="logout()"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <button class="theme-toggle" onclick="toggleTheme()">
+                            <i class="fas fa-moon" id="themeIcon"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <div class="main-container">
+            <!-- Home Page -->
+            <div id="home" class="page-content active">
+                <div class="container">
+                    <h1 class="section-title">Welcome back, <span id="welcomeName">User</span>!</h1>
+                    
+                    <!-- Subscription Info Bar -->
+                    <div id="subscriptionInfoBar"></div>
+                    
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <button class="btn btn-primary" onclick="openAddDramaModal()">
+                            <i class="fas fa-plus"></i> Add New Drama
+                        </button>
+                        <button class="btn btn-outline-primary" onclick="importSampleData()">
+                            <i class="fas fa-download"></i> Import Sample Data
+                        </button>
+                    </div>
+                    
+                    <div class="row" id="homeCards">
+                        <!-- Drama cards will be loaded here -->
+                    </div>
+                    
+                    <!-- Premium Features Section -->
+                    <div class="premium-features" id="premiumFeaturesSection">
+                        <h4><i class="fas fa-crown me-2"></i>Unlock Premium Features</h4>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <div class="premium-feature-item">
+                                    <div class="premium-icon">
+                                        <i class="fas fa-cloud"></i>
+                                    </div>
+                                    <div>
+                                        <strong>Cloud Sync</strong>
+                                        <p class="mb-0">Akses data dari mana saja</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="premium-feature-item">
+                                    <div class="premium-icon">
+                                        <i class="fas fa-journal-whills"></i>
+                                    </div>
+                                    <div>
+                                        <strong>Mood Journal</strong>
+                                        <p class="mb-0">Catat perasaan setelah menonton</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="premium-feature-item">
+                                    <div class="premium-icon">
+                                        <i class="fas fa-chart-line"></i>
+                                    </div>
+                                    <div>
+                                        <strong>Advanced Analytics</strong>
+                                        <p class="mb-0">Analisis pola menonton mendalam</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="premium-feature-item">
+                                    <div class="premium-icon">
+                                        <i class="fas fa-image"></i>
+                                    </div>
+                                    <div>
+                                        <strong>Upload Foto Drama</strong>
+                                        <p class="mb-0">Upload foto poster drama dari komputer</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="btn btn-lg premium-btn w-100 mt-3" onclick="showUpgradeModal()">
+                            <i class="fas fa-crown"></i> Upgrade to Premium
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Watchlog Page -->
+            <div id="watchlog" class="page-content">
+                <div class="container">
+                    <h1 class="section-title">My Watchlog</h1>
+                    
+                    <!-- Subscription Info Bar -->
+                    <div id="subscriptionInfoBarWatchlog"></div>
+                    
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <div class="btn-group" role="group">
+                            <button type="button" class="btn btn-outline-primary active" onclick="filterWatchlog('all')">All</button>
+                            <button type="button" class="btn btn-outline-primary" onclick="filterWatchlog('watching')">Watching</button>
+                            <button type="button" class="btn btn-outline-primary" onclick="filterWatchlog('completed')">Completed</button>
+                            <button type="button" class="btn btn-outline-primary" onclick="filterWatchlog('plan')">Plan to Watch</button>
+                        </div>
+                        <button class="btn btn-primary" onclick="openAddDramaModal()">
+                            <i class="fas fa-plus"></i> Add Drama
+                        </button>
+                    </div>
+
+                    <!-- Feature Badge untuk Free Features -->
+                    <div class="alert alert-success mb-4">
+                        <i class="fas fa-check-circle me-2"></i>
+                        <strong>Fitur Gratis:</strong> Anda dapat menggunakan semua fitur dasar pencatatan drama secara gratis!
+                    </div>
+
+                    <h5 class="mt-4" style="color: green; padding: 8px 10px; border-radius: 8px; display: inline-block; font-size: 1.2rem;">Completed</h5>
+                    <div class="scroll-container" id="completedList"></div>
+
+                    <h5 class="mt-5" style="color: red; padding: 8px 10px; border-radius: 8px; display: inline-block; font-size: 1.2rem;">Watching</h5>
+                    <div class="scroll-container" id="watchingList"></div>
+
+                    <h5 class="mt-5" style="color: blue; padding: 8px 10px; border-radius: 8px; display: inline-block; font-size: 1.2rem;">Plan to Watch</h5>
+                    <div class="scroll-container" id="planList"></div>
+                </div>
+            </div>
+
+            <!-- Categories Page -->
+            <div id="categories" class="page-content">
+                <div class="container">
+                    <h1 class="section-title">Categories</h1>
+                    
+                    <!-- Subscription Info Bar -->
+                    <div id="subscriptionInfoBarCategories"></div>
+                    
+                    <!-- Free Features Info -->
+                    <div class="row mb-4">
+                        <div class="col-md-8">
+                            <div class="card free-feature">
+                                <div class="card-body">
+                                    <h5><i class="fas fa-check text-success me-2"></i>Fitur Gratis Tersedia</h5>
+                                    <p class="mb-2">Pencarian drama, filter tahun, dan statistik dasar</p>
+                                    <span class="badge-free feature-badge">GRATIS</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card premium-feature">
+                                <div class="card-body">
+                                    <h5><i class="fas fa-crown me-2"></i>Analisis Lanjutan</h5>
+                                    <p class="mb-2">Analisis pola menonton dan genre favorit</p>
+                                    <span class="badge-premium feature-badge">PREMIUM</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="search-box mb-4">
+                        <input type="text" class="form-control" id="searchInput" placeholder="🔍 Search drama..." onkeyup="searchDrama()">
+                    </div>
+
+                    <div class="mb-4">
+                        <button class="btn btn-outline-primary filter-btn" onclick="filterByYear('all')">All</button>
+                        <button class="btn btn-outline-primary filter-btn" onclick="filterByYear(2025)">2025</button>
+                        <button class="btn btn-outline-primary filter-btn" onclick="filterByYear(2024)">2024</button>
+                        <button class="btn btn-outline-primary filter-btn" onclick="filterByYear(2023)">2023</button>
+                        <button class="btn btn-outline-primary filter-btn" onclick="filterByYear(2022)">2022</button>
+                    </div>
+
+                    <div class="row mb-4">
+                        <div class="col-md-4">
+                            <div class="stats-card">
+                                <h3 id="totalDramas">0</h3>
+                                <p>Total Dramas <span class="badge-free">GRATIS</span></p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="stats-card">
+                                <h3 id="completedCount">0</h3>
+                                <p>Completed <span class="badge-free">GRATIS</span></p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="stats-card">
+                                <h3 id="watchingCount">0</h3>
+                                <p>Watching <span class="badge-free">GRATIS</span></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row" id="categoriesCards"></div>
+                </div>
+            </div>
+
+            <!-- Reviews Page -->
+            <div id="reviews" class="page-content">
+                <div class="container">
+                    <h1 class="section-title">My Reviews</h1>
+                    
+                    <!-- Subscription Info Bar -->
+                    <div id="subscriptionInfoBarReviews"></div>
+                    
+                    <!-- Features Comparison -->
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <div class="card free-feature h-100">
+                                <div class="card-body">
+                                    <h5><i class="fas fa-check text-success me-2"></i>Fitur Gratis</h5>
+                                    <ul class="list-unstyled">
+                                        <li><i class="fas fa-check text-success me-2"></i>Rating 1-5 bintang</li>
+                                        <li><i class="fas fa-check text-success me-2"></i>Review teks</li>
+                                        <li><i class="fas fa-check text-success me-2"></i>Tanggal review</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card premium-feature h-100">
+                                <div class="card-body">
+                                    <h5><i class="fas fa-crown me-2"></i>Fitur Premium</h5>
+                                    <ul class="list-unstyled">
+                                        <li><i class="fas fa-plus-circle me-2"></i>Upload foto drama dari komputer</li>
+                                        <li><i class="fas fa-plus-circle me-2"></i>Mood tracking setelah menonton</li>
+                                        <li><i class="fas fa-plus-circle me-2"></i>Journal pribadi terlindungi</li>
+                                    </ul>
+                                    <button class="btn premium-btn w-100 mt-2" onclick="showUpgradeModal()">
+                                        <i class="fas fa-crown"></i> Upgrade Now
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row" id="reviewsList"></div>
+                </div>
+            </div>
+
+            <!-- Profile Page -->
+            <div id="profile" class="page-content">
+                <div class="container">
+                    <h1 class="section-title">My Profile</h1>
+                    
+                    <!-- Subscription Info Bar -->
+                    <div id="subscriptionInfoBarProfile"></div>
+                    
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="card">
+                                <div class="card-body text-center">
+                                    <div class="profile-avatar-large mb-3" id="profileAvatarLarge"></div>
+                                    <h4 id="profileName">User Name</h4>
+                                    <p class="text-muted" id="profileEmail">user@example.com</p>
+                                    <div class="mb-3">
+                                        <span id="profilePlanBadge" class="feature-badge"></span>
+                                    </div>
+                                    <button class="btn btn-outline-primary btn-sm mt-2" onclick="editProfile()">
+                                        <i class="fas fa-edit"></i> Edit Profile
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="card mt-4">
+                                <div class="card-body">
+                                    <h5>Account Stats <span class="badge-free">GRATIS</span></h5>
+                                    <ul class="list-group list-group-flush">
+                                        <li class="list-group-item d-flex justify-content-between">
+                                            <span>Dramas Tracked</span>
+                                            <span id="profileTotalDramas">0</span>
+                                        </li>
+                                        <li class="list-group-item d-flex justify-content-between">
+                                            <span>Completed</span>
+                                            <span id="profileCompleted">0</span>
+                                        </li>
+                                        <li class="list-group-item d-flex justify-content-between">
+                                            <span>Watching</span>
+                                            <span id="profileWatching">0</span>
+                                        </li>
+                                        <li class="list-group-item d-flex justify-content-between">
+                                            <span>Favorite Genre</span>
+                                            <span id="profileFavoriteGenre">-</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-8">
+                            <!-- Subscription Management Section -->
+                            <div class="card mb-4" id="subscriptionManagementCard">
+                                <div class="card-body">
+                                    <h5><i class="fas fa-crown me-2"></i>Subscription Management</h5>
+                                    <div id="subscriptionDetails">
+                                        <!-- Subscription details will be loaded here -->
+                                    </div>
+                                    <div class="mt-3">
+                                        <button class="btn btn-outline-primary me-2" onclick="showUpgradeModal()">
+                                            <i class="fas fa-crown"></i> Renew Premium
+                                        </button>
+                                        <button class="btn btn-outline-danger" onclick="downgradeToFree()">
+                                            <i class="fas fa-arrow-down"></i> Downgrade Now
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5>Recent Activity <span class="badge-free">GRATIS</span></h5>
+                                    <div id="profileActivity"></div>
+                                </div>
+                            </div>
+                            
+                            <!-- Premium Features Promotion -->
+                            <div class="card mt-4 premium-feature" id="premiumPromotionCard">
+                                <div class="card-body">
+                                    <h5><i class="fas fa-crown me-2"></i>Upgrade untuk Fitur Premium</h5>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <ul class="list-unstyled">
+                                                <li><i class="fas fa-cloud me-2"></i>Cloud Sync</li>
+                                                <li><i class="fas fa-chart-line me-2"></i>Advanced Analytics</li>
+                                                <li><i class="fas fa-journal-whills me-2"></i>Mood Journal</li>
+                                            </ul>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <ul class="list-unstyled">
+                                                <li><i class="fas fa-image me-2"></i>Upload Foto Drama</li>
+                                                <li><i class="fas fa-lock me-2"></i>Private Notes</li>
+                                                <li><i class="fas fa-palette me-2"></i>Custom Themes</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <button class="btn premium-btn w-100 mt-3" onclick="showUpgradeModal()">
+                                        <i class="fas fa-crown"></i> Upgrade to Premium - Rp 49,999/bulan
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings Page -->
+            <div id="settings" class="page-content">
+                <div class="container">
+                    <h1 class="section-title">Settings</h1>
+                    
+                    <!-- Subscription Info Bar -->
+                    <div id="subscriptionInfoBarSettings"></div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5>Account Settings <span class="badge-free">GRATIS</span></h5>
+                                    <div class="mb-3">
+                                        <label class="form-label">Notification Preferences</label>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="emailNotifications" checked>
+                                            <label class="form-check-label" for="emailNotifications">
+                                                Email notifications
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="friendRequests" checked>
+                                            <label class="form-check-label" for="friendRequests">
+                                                Friend requests
+                                            </label>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label class="form-label">Privacy</label>
+                                        <select class="form-select" id="privacySetting">
+                                            <option value="public">Public</option>
+                                            <option value="friends">Friends Only</option>
+                                            <option value="private">Private</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <button class="btn btn-primary" onclick="saveSettings()">
+                                        <i class="fas fa-save"></i> Save Settings
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5>Change Password <span class="badge-free">GRATIS</span></h5>
+                                    <div class="mb-3">
+                                        <label class="form-label">Current Password</label>
+                                        <input type="password" class="form-control" id="currentPassword">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">New Password</label>
+                                        <input type="password" class="form-control" id="newPassword">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Confirm New Password</label>
+                                        <input type="password" class="form-control" id="confirmNewPassword">
+                                    </div>
+                                    <button class="btn btn-primary" onclick="changePassword()">
+                                        <i class="fas fa-key"></i> Change Password
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <!-- Theme Customization (Premium Feature) -->
+                            <div class="card mt-4 premium-feature">
+                                <div class="card-body">
+                                    <h5><i class="fas fa-crown me-2"></i>Theme Customization</h5>
+                                    <p class="text-muted">Unlock custom themes with Premium</p>
+                                    <div class="d-flex gap-2">
+                                        <div class="theme-preview" style="width: 40px; height: 40px; background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 8px; cursor: pointer;" onclick="previewPremiumFeature()"></div>
+                                        <div class="theme-preview" style="width: 40px; height: 40px; background: linear-gradient(135deg, #f093fb, #f5576c); border-radius: 8px; cursor: pointer;" onclick="previewPremiumFeature()"></div>
+                                        <div class="theme-preview" style="width: 40px; height: 40px; background: linear-gradient(135deg, #4facfe, #00f2fe); border-radius: 8px; cursor: pointer;" onclick="previewPremiumFeature()"></div>
+                                        <div class="theme-preview" style="width: 40px; height: 40px; background: linear-gradient(135deg, #43e97b, #38f9d7); border-radius: 8px; cursor: pointer;" onclick="previewPremiumFeature()"></div>
+                                    </div>
+                                    <button class="btn premium-btn w-100 mt-3" onclick="showUpgradeModal()">
+                                        <i class="fas fa-crown"></i> Unlock Custom Themes
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="container">
+                <p>&copy; 2025 K-Track. All rights reserved.</p>
+                <button class="btn btn-outline-light btn-sm" data-bs-toggle="modal" data-bs-target="#aboutModal">
+                    About Developer
+                </button>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Modals -->
+    <!-- About Modal -->
+    <div class="modal fade" id="aboutModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">About Developer</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p><strong>Anyeong chingu! ✨</strong></p>
+                    <p>Kenalin aku <strong>Veronika Jean Adinesa Putri</strong>, tapi cukup panggil Vero aja. Sekarang aku kuliah di Universitas Sugeng Hartono, jurusan Bisnis Digital semester 5 (NIM 062302081).</p>
+                    <p>Aku lumayan suka hal-hal yang berbau desain jadi Selamat welcome di halaman proyekku!</p>
+                    <p>K-Track ku ini lahir dari sebuah hobi kecil yang terkadang jadi healing spot kalo lagi suntuk yaitu nonton K-Drama. Aku ingin kalian yang punya hobi sama bisa punya tempat yang simple, rapi, dan menyenangkan buat ngetrack semua tontonan kalian.</p>
+                    <p>Semoga kalian merasa ditemani di sini 🤍</p>
+                    <p><strong>Find me on:</strong></p>
+                    <p>
+                        <a href="https://instagram.com/veronikaaajn" target="_blank"><i class="fab fa-instagram"></i> @veronikaaajn</a><br>
+                        <a href="https://tiktok.com/@veroonikaaajn" target="_blank"><i class="fab fa-tiktok"></i> @veroonikaaajn</a><br>
+                        <a href="https://youtube.com/@Veronikaaajn" target="_blank"><i class="fab fa-youtube"></i> Veronikaaajn</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Upgrade to Premium Modal -->
+    <div class="modal fade premium-modal" id="upgradeModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-crown me-2"></i>Upgrade to Premium</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <h4 class="text-center mb-4">Choose Your Plan</h4>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-4">
+                            <div class="card pricing-card pricing-free">
+                                <div class="pricing-header">
+                                    <h3>Free</h3>
+                                    <div class="price">Rp 0<small>/selamanya</small></div>
+                                </div>
+                                <div class="pricing-body">
+                                    <ul class="list-unstyled">
+                                        <li><i class="fas fa-check text-success me-2"></i>Registrasi & Login</li>
+                                        <li><i class="fas fa-check text-success me-2"></i>Dashboard tontonan</li>
+                                        <li><i class="fas fa-check text-success me-2"></i>Pencatatan drama</li>
+                                        <li><i class="fas fa-check text-success me-2"></i>Update progres episode</li>
+                                        <li><i class="fas fa-check text-success me-2"></i>Rating & review</li>
+                                        <li><i class="fas fa-check text-success me-2"></i>Statistik dasar</li>
+                                    </ul>
+                                    <button class="btn btn-outline-primary w-100" data-bs-dismiss="modal">
+                                        Current Plan
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6 mb-4">
+                            <div class="card pricing-card pricing-premium">
+                                <div class="pricing-header">
+                                    <h3>Premium</h3>
+                                    <div class="price">Rp 49,999<small>/bulan</small></div>
+                                </div>
+                                <div class="pricing-body">
+                                    <ul class="list-unstyled">
+                                        <li><i class="fas fa-check me-2"></i><strong>Semua fitur Free</strong></li>
+                                        <li><i class="fas fa-check me-2"></i>Cloud sync lintas perangkat</li>
+                                        <li><i class="fas fa-check me-2"></i>Mood & reflection journal</li>
+                                        <li><i class="fas fa-check me-2"></i>Upload foto/video scene favorit</li>
+                                        <li><i class="fas fa-check me-2"></i>Advanced analytics</li>
+                                        <li><i class="fas fa-check me-2"></i>Personalized themes</li>
+                                        <li><i class="fas fa-check me-2"></i>Catatan privat dengan pengamanan</li>
+                                    </ul>
+                                    <div class="mb-3">
+                                        <label class="form-label">Subscription Duration</label>
+                                        <select class="form-select" id="subscriptionDuration">
+                                            <option value="1">1 bulan</option>
+                                            <option value="3">3 bulan (Rp 134,997)</option>
+                                            <option value="6">6 bulan (Rp 269,994)</option>
+                                            <option value="12">12 bulan (Rp 539,988)</option>
+                                        </select>
+                                    </div>
+                                    <button class="btn premium-btn w-100" onclick="upgradeToPremium()">
+                                        <i class="fas fa-crown"></i> Upgrade Now
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="text-center mt-4">
+                        <p class="mb-1"><i class="fas fa-sync-alt me-2"></i>Cancel anytime</p>
+                        <p class="mb-0"><i class="fas fa-shield-alt me-2"></i>Secure payment</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Drama Modal and other modals remain the same as in your original code -->
+    <!-- (I'm including the rest of your modals as they were) -->
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // ==================== SAAS DATABASE SYSTEM ====================
+        
+        // Initialize database structure
+        function initDatabase() {
+            if (!localStorage.getItem('ktrack_users')) {
+                localStorage.setItem('ktrack_users', JSON.stringify([]));
+            }
+            if (!localStorage.getItem('ktrack_dramas')) {
+                localStorage.setItem('ktrack_dramas', JSON.stringify({}));
+            }
+            if (!localStorage.getItem('ktrack_settings')) {
+                localStorage.setItem('ktrack_settings', JSON.stringify({}));
+            }
+            if (!localStorage.getItem('ktrack_subscriptions')) {
+                localStorage.setItem('ktrack_subscriptions', JSON.stringify({}));
+            }
+            
+            // Add default admin user if not exists
+            const users = JSON.parse(localStorage.getItem('ktrack_users'));
+            const adminExists = users.some(user => user.email === 'admin@ktrack.com');
+            
+            if (!adminExists) {
+                const adminUser = {
+                    id: generateId(),
+                    firstName: 'Admin',
+                    lastName: 'User',
+                    email: 'admin@ktrack.com',
+                    password: hashPassword('password'),
+                    role: 'admin',
+                    plan: 'free',
+                    subscriptionEndDate: null,
+                    createdAt: new Date().toISOString(),
+                    avatarColor: '#16476A'
+                };
+                users.push(adminUser);
+                localStorage.setItem('ktrack_users', JSON.stringify(users));
+                
+                // Initialize admin's drama collection
+                const dramas = JSON.parse(localStorage.getItem('ktrack_dramas'));
+                dramas[adminUser.id] = [];
+                localStorage.setItem('ktrack_dramas', JSON.stringify(dramas));
+                
+                // Initialize admin's settings
+                const settings = JSON.parse(localStorage.getItem('ktrack_settings'));
+                settings[adminUser.id] = {
+                    theme: 'light',
+                    notifications: true,
+                    privacy: 'public'
+                };
+                localStorage.setItem('ktrack_settings', JSON.stringify(settings));
+                
+                // Initialize admin's subscription
+                const subscriptions = JSON.parse(localStorage.getItem('ktrack_subscriptions'));
+                subscriptions[adminUser.id] = {
+                    plan: 'free',
+                    startDate: null,
+                    endDate: null,
+                    autoRenew: false,
+                    paymentHistory: []
+                };
+                localStorage.setItem('ktrack_subscriptions', JSON.stringify(subscriptions));
+            }
+        }
+
+        // Generate unique ID
+        function generateId() {
+            return Date.now().toString(36) + Math.random().toString(36).substr(2);
+        }
+
+        // Simple password hashing (for demo purposes)
+        function hashPassword(password) {
+            return btoa(password); // Base64 encoding (not secure for production)
+        }
+
+        // Verify password
+        function verifyPassword(inputPassword, storedHash) {
+            return hashPassword(inputPassword) === storedHash;
+        }
+
+        // Convert image to Base64 Data URL
+        function convertImageToBase64(file, callback) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                callback(e.target.result);
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // Format date
+        function formatDate(date) {
+            return new Date(date).toLocaleDateString('id-ID', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        // Calculate days remaining
+        function calculateDaysRemaining(endDate) {
+            if (!endDate) return 0;
+            const end = new Date(endDate);
+            const now = new Date();
+            const diffTime = end - now;
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            return diffDays > 0 ? diffDays : 0;
+        }
+
+        // Current user session
+        let currentUser = null;
+        let currentUserDramas = [];
+        let currentSubscription = null;
+
+        // ==================== AUTHENTICATION ====================
+
+        // Show login page
+        function showLoginPage() {
+            document.getElementById('loginPage').style.display = 'flex';
+            document.getElementById('registerPage').style.display = 'none';
+            document.getElementById('forgotPasswordPage').style.display = 'none';
+        }
+
+        // Show register page
+        function showRegisterPage() {
+            document.getElementById('loginPage').style.display = 'none';
+            document.getElementById('registerPage').style.display = 'flex';
+            document.getElementById('forgotPasswordPage').style.display = 'none';
+        }
+
+        // Show forgot password page
+        function showForgotPasswordPage() {
+            document.getElementById('loginPage').style.display = 'none';
+            document.getElementById('registerPage').style.display = 'none';
+            document.getElementById('forgotPasswordPage').style.display = 'flex';
+        }
+
+        // Handle login
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            const users = JSON.parse(localStorage.getItem('ktrack_users'));
+            const user = users.find(u => u.email === email);
+            
+            if (!user) {
+                alert('User not found. Please register first.');
+                return;
+            }
+            
+            if (!verifyPassword(password, user.password)) {
+                alert('Invalid password. Please try again.');
+                return;
+            }
+            
+            // Login successful
+            currentUser = user;
+            currentUserDramas = getUserDramas(user.id);
+            currentSubscription = getUserSubscription(user.id);
+            
+            // Check if premium subscription has expired
+            checkSubscriptionExpiry();
+            
+            // Update UI
+            document.getElementById('authPages').style.display = 'none';
+            document.getElementById('mainApp').style.display = 'block';
+            
+            // Set user info
+            document.getElementById('userName').textContent = `${user.firstName} ${user.lastName}`;
+            document.getElementById('welcomeName').textContent = user.firstName;
+            document.getElementById('userAvatar').textContent = user.firstName.charAt(0) + user.lastName.charAt(0);
+            document.getElementById('userAvatar').style.background = user.avatarColor || getRandomColor();
+            
+            // Update plan badge
+            updatePlanBadge();
+            
+            // Load user data
+            loadUserData();
+            
+            // Clear form
+            document.getElementById('loginForm').reset();
+            
+            // Check if remember me is checked
+            const rememberMe = document.getElementById('rememberMe').checked;
+            if (rememberMe) {
+                localStorage.setItem('ktrack_remembered', email);
+            }
+        });
+
+        // Handle registration
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const firstName = document.getElementById('firstName').value;
+            const lastName = document.getElementById('lastName').value;
+            const email = document.getElementById('registerEmail').value;
+            const password = document.getElementById('registerPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const planType = document.querySelector('input[name="planType"]:checked').value;
+            
+            // Validation
+            if (password !== confirmPassword) {
+                alert('Passwords do not match.');
+                return;
+            }
+            
+            if (password.length < 8) {
+                alert('Password must be at least 8 characters long.');
+                return;
+            }
+            
+            const users = JSON.parse(localStorage.getItem('ktrack_users'));
+            
+            // Check if user already exists
+            if (users.some(u => u.email === email)) {
+                alert('User with this email already exists.');
+                return;
+            }
+            
+            // Create new user
+            const newUser = {
+                id: generateId(),
+                firstName: firstName,
+                lastName: lastName,
+                email: email,
+                password: hashPassword(password),
+                role: 'user',
+                plan: planType, // 'free' or 'premium'
+                subscriptionEndDate: planType === 'premium' ? getFutureDate(30) : null, // 30 days trial
+                createdAt: new Date().toISOString(),
+                avatarColor: getRandomColor()
+            };
+            
+            users.push(newUser);
+            localStorage.setItem('ktrack_users', JSON.stringify(users));
+            
+            // Initialize user's drama collection
+            const dramas = JSON.parse(localStorage.getItem('ktrack_dramas'));
+            dramas[newUser.id] = [];
+            localStorage.setItem('ktrack_dramas', JSON.stringify(dramas));
+            
+            // Initialize user's settings
+            const settings = JSON.parse(localStorage.getItem('ktrack_settings'));
+            settings[newUser.id] = {
+                theme: 'light',
+                notifications: true,
+                privacy: 'public'
+            };
+            localStorage.setItem('ktrack_settings', JSON.stringify(settings));
+            
+            // Initialize user's subscription
+            const subscriptions = JSON.parse(localStorage.getItem('ktrack_subscriptions'));
+            subscriptions[newUser.id] = {
+                plan: planType,
+                startDate: new Date().toISOString(),
+                endDate: planType === 'premium' ? getFutureDate(30) : null,
+                autoRenew: false,
+                paymentHistory: []
+            };
+            localStorage.setItem('ktrack_subscriptions', JSON.stringify(subscriptions));
+            
+            if (planType === 'premium') {
+                alert('Registration successful! You have 30-day premium trial. Please login.');
+            } else {
+                alert('Registration successful! You can upgrade to Premium anytime. Please login.');
+            }
+            showLoginPage();
+            document.getElementById('registerForm').reset();
+        });
+
+        // Handle forgot password
+        document.getElementById('forgotPasswordForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = document.getElementById('resetEmail').value;
+            
+            const users = JSON.parse(localStorage.getItem('ktrack_users'));
+            const userExists = users.some(u => u.email === email);
+            
+            if (userExists) {
+                alert('Password reset link has been sent to your email (demo: reset to "password")');
+            } else {
+                alert('Email not found in our system.');
+            }
+            
+            document.getElementById('forgotPasswordForm').reset();
+            showLoginPage();
+        });
+
+        // Update plan badge
+        function updatePlanBadge() {
+            if (!currentUser) return;
+            
+            const badge = document.getElementById('userPlanBadge');
+            const profileBadge = document.getElementById('profilePlanBadge');
+            const uploadBadge = document.getElementById('uploadBadge');
+            
+            if (currentUser.plan === 'premium') {
+                const daysRemaining = calculateDaysRemaining(currentUser.subscriptionEndDate);
+                
+                if (daysRemaining <= 7 && daysRemaining > 0) {
+                    badge.innerHTML = '<span class="badge-expiring">PREMIUM (' + daysRemaining + ' hari)</span>';
+                    profileBadge.innerHTML = '<span class="badge-expiring">PREMIUM (' + daysRemaining + ' hari)</span>';
+                } else if (daysRemaining > 0) {
+                    badge.innerHTML = '<span class="badge-premium">PREMIUM</span>';
+                    profileBadge.innerHTML = '<span class="badge-premium">PREMIUM MEMBER</span>';
+                } else {
+                    badge.innerHTML = '<span class="badge-free">FREE</span>';
+                    profileBadge.innerHTML = '<span class="badge-free">FREE PLAN</span>';
+                }
+                
+                if (uploadBadge) {
+                    uploadBadge.innerHTML = '<span class="badge-premium">PREMIUM</span>';
+                }
+            } else {
+                badge.innerHTML = '<span class="badge-free">FREE</span>';
+                profileBadge.innerHTML = '<span class="badge-free">FREE PLAN</span>';
+                if (uploadBadge) {
+                    uploadBadge.innerHTML = '<span class="badge-free">GRATIS</span>';
+                }
+            }
+        }
+
+        // Logout
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                currentUser = null;
+                currentUserDramas = [];
+                currentSubscription = null;
+                
+                document.getElementById('mainApp').style.display = 'none';
+                document.getElementById('authPages').style.display = 'block';
+                showLoginPage();
+            }
+        }
+
+        // Get random color for avatar
+        function getRandomColor() {
+            const colors = ['#16476A', '#FF5555', '#28a745', '#ffc107', '#17a2b8', '#6f42c1'];
+            return colors[Math.floor(Math.random() * colors.length)];
+        }
+
+        // Get future date (for subscription)
+        function getFutureDate(days) {
+            const date = new Date();
+            date.setDate(date.getDate() + days);
+            return date.toISOString();
+        }
+
+        // ==================== USER DATA MANAGEMENT ====================
+
+        // Get user's dramas
+        function getUserDramas(userId) {
+            const dramas = JSON.parse(localStorage.getItem('ktrack_dramas'));
+            return dramas[userId] || [];
+        }
+
+        // Save user's dramas
+        function saveUserDramas(userId, dramas) {
+            const allDramas = JSON.parse(localStorage.getItem('ktrack_dramas'));
+            allDramas[userId] = dramas;
+            localStorage.setItem('ktrack_dramas', JSON.stringify(allDramas));
+            currentUserDramas = dramas;
+        }
+
+        // Get user's subscription
+        function getUserSubscription(userId) {
+            const subscriptions = JSON.parse(localStorage.getItem('ktrack_subscriptions'));
+            return subscriptions[userId] || {
+                plan: 'free',
+                startDate: null,
+                endDate: null,
+                autoRenew: false,
+                paymentHistory: []
+            };
+        }
+
+        // Save user's subscription
+        function saveUserSubscription(userId, subscription) {
+            const allSubscriptions = JSON.parse(localStorage.getItem('ktrack_subscriptions'));
+            allSubscriptions[userId] = subscription;
+            localStorage.setItem('ktrack_subscriptions', JSON.stringify(allSubscriptions));
+            currentSubscription = subscription;
+        }
+
+        // Check subscription expiry
+        function checkSubscriptionExpiry() {
+            if (!currentUser || currentUser.plan !== 'premium') return;
+            
+            const endDate = new Date(currentUser.subscriptionEndDate);
+            const now = new Date();
+            
+            // If subscription has expired
+            if (endDate < now) {
+                // Downgrade to free
+                downgradeUserToFree();
+                
+                // Show notification
+                showExpiryNotification();
+            }
+        }
+
+        // Downgrade user to free plan
+        function downgradeUserToFree() {
+            // Update user in database
+            const users = JSON.parse(localStorage.getItem('ktrack_users'));
+            const userIndex = users.findIndex(u => u.id === currentUser.id);
+            
+            if (userIndex !== -1) {
+                users[userIndex].plan = 'free';
+                users[userIndex].subscriptionEndDate = null;
+                localStorage.setItem('ktrack_users', JSON.stringify(users));
+                
+                // Update subscription record
+                const subscriptions = JSON.parse(localStorage.getItem('ktrack_subscriptions'));
+                if (subscriptions[currentUser.id]) {
+                    subscriptions[currentUser.id].plan = 'free';
+                    subscriptions[currentUser.id].endDate = null;
+                    subscriptions[currentUser.id].autoRenew = false;
+                    localStorage.setItem('ktrack_subscriptions', JSON.stringify(subscriptions));
+                }
+                
+                // Update current user
+                currentUser.plan = 'free';
+                currentUser.subscriptionEndDate = null;
+                currentSubscription = getUserSubscription(currentUser.id);
+                
+                // Update UI
+                updatePlanBadge();
+                renderSubscriptionInfoBars();
+                renderProfile();
+                
+                // Remove premium features from dramas
+                removePremiumFeaturesFromDramas();
+                
+                return true;
+            }
+            return false;
+        }
+
+        // Remove premium features from dramas
+        function removePremiumFeaturesFromDramas() {
+            currentUserDramas.forEach(drama => {
+                // Clear mood data
+                drama.mood = '';
+            });
+            saveUserDramas(currentUser.id, currentUserDramas);
+        }
+
+        // Show expiry notification
+        function showExpiryNotification() {
+            // This function is called when subscription expires
+            // You can customize how to show the notification
+            alert('Your Premium subscription has expired. You have been downgraded to Free plan.');
+        }
+
+        // Load user data
+        function loadUserData() {
+            if (!currentUser) return;
+            
+            currentUserDramas = getUserDramas(currentUser.id);
+            currentSubscription = getUserSubscription(currentUser.id);
+            
+            // Check subscription expiry
+            checkSubscriptionExpiry();
+            
+            // Load profile data
+            document.getElementById('profileName').textContent = `${currentUser.firstName} ${currentUser.lastName}`;
+            document.getElementById('profileEmail').textContent = currentUser.email;
+            
+            // Create profile avatar if it doesn't exist
+            const profileAvatarLarge = document.getElementById('profileAvatarLarge');
+            if (!profileAvatarLarge.classList.contains('profile-avatar-large')) {
+                profileAvatarLarge.className = 'profile-avatar-large mb-3';
+                profileAvatarLarge.style.width = '120px';
+                profileAvatarLarge.style.height = '120px';
+                profileAvatarLarge.style.borderRadius = '50%';
+                profileAvatarLarge.style.display = 'flex';
+                profileAvatarLarge.style.alignItems = 'center';
+                profileAvatarLarge.style.justifyContent = 'center';
+                profileAvatarLarge.style.color = 'white';
+                profileAvatarLarge.style.fontWeight = 'bold';
+                profileAvatarLarge.style.fontSize = '2.5rem';
+                profileAvatarLarge.style.margin = '0 auto';
+            }
+            profileAvatarLarge.textContent = currentUser.firstName.charAt(0) + currentUser.lastName.charAt(0);
+            profileAvatarLarge.style.background = currentUser.avatarColor || getRandomColor();
+            
+            // Update plan badge
+            updatePlanBadge();
+            
+            // Load settings
+            const settings = JSON.parse(localStorage.getItem('ktrack_settings'));
+            const userSettings = settings[currentUser.id] || {};
+            
+            if (userSettings.theme === 'dark') {
+                document.body.classList.add('dark-mode');
+                document.getElementById('themeIcon').classList.remove('fa-moon');
+                document.getElementById('themeIcon').classList.add('fa-sun');
+            }
+            
+            // Render subscription info bars
+            renderSubscriptionInfoBars();
+            
+            // Render pages
+            renderHome();
+            renderWatchlog();
+            renderCategories();
+            renderReviews();
+            renderProfile();
+            updateStats();
+        }
+
+        // ==================== SUBSCRIPTION MANAGEMENT ====================
+
+        // Render subscription info bars
+        function renderSubscriptionInfoBars() {
+            if (!currentUser) return;
+            
+            const bars = [
+                'subscriptionInfoBar',
+                'subscriptionInfoBarWatchlog',
+                'subscriptionInfoBarCategories',
+                'subscriptionInfoBarReviews',
+                'subscriptionInfoBarProfile',
+                'subscriptionInfoBarSettings'
+            ];
+            
+            bars.forEach(barId => {
+                const bar = document.getElementById(barId);
+                if (bar) {
+                    if (currentUser.plan === 'premium') {
+                        const daysRemaining = calculateDaysRemaining(currentUser.subscriptionEndDate);
+                        
+                        if (daysRemaining <= 7 && daysRemaining > 0) {
+                            bar.innerHTML = `
+                                <div class="expiry-notification">
+                                    <div>
+                                        <i class="fas fa-exclamation-triangle me-2"></i>
+                                        <strong>Premium subscription ending soon!</strong>
+                                        <p class="mb-0">Your premium plan expires in ${daysRemaining} day(s)</p>
+                                    </div>
+                                    <button class="btn premium-btn" onclick="showUpgradeModal()">
+                                        <i class="fas fa-crown"></i> Renew Now
+                                    </button>
+                                </div>
+                            `;
+                        } else if (daysRemaining > 0) {
+                            bar.innerHTML = `
+                                <div class="subscription-info">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <i class="fas fa-crown me-2"></i>
+                                            <strong>Premium Member</strong>
+                                            <p class="mb-0">Valid until ${formatDate(currentUser.subscriptionEndDate)}</p>
+                                        </div>
+                                        <div class="subscription-timer">
+                                            ${daysRemaining} days remaining
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                        } else {
+                            bar.innerHTML = `
+                                <div class="expiry-notification">
+                                    <div>
+                                        <i class="fas fa-exclamation-circle me-2"></i>
+                                        <strong>Premium subscription expired!</strong>
+                                        <p class="mb-0">You have been downgraded to Free plan</p>
+                                    </div>
+                                    <button class="btn premium-btn" onclick="showUpgradeModal()">
+                                        <i class="fas fa-crown"></i> Renew Now
+                                    </button>
+                                </div>
+                            `;
+                        }
+                    } else {
+                        bar.innerHTML = '';
+                    }
+                }
+            });
+            
+            // Also update premium features section
+            const premiumSection = document.getElementById('premiumFeaturesSection');
+            if (premiumSection) {
+                if (currentUser.plan === 'free') {
+                    premiumSection.style.display = 'block';
+                } else {
+                    premiumSection.style.display = 'none';
+                }
+            }
+            
+            // Update subscription management card
+            updateSubscriptionManagementCard();
+        }
+
+        // Update subscription management card
+        function updateSubscriptionManagementCard() {
+            const card = document.getElementById('subscriptionManagementCard');
+            const promotionCard = document.getElementById('premiumPromotionCard');
+            const details = document.getElementById('subscriptionDetails');
+            
+            if (!card || !details) return;
+            
+            if (currentUser.plan === 'premium') {
+                const daysRemaining = calculateDaysRemaining(currentUser.subscriptionEndDate);
+                const endDate = currentUser.subscriptionEndDate ? formatDate(currentUser.subscriptionEndDate) : 'N/A';
+                
+                details.innerHTML = `
+                    <div class="mb-3">
+                        <p><strong>Current Plan:</strong> <span class="badge-premium">PREMIUM</span></p>
+                        <p><strong>Subscription End Date:</strong> ${endDate}</p>
+                        <p><strong>Days Remaining:</strong> ${daysRemaining} day(s)</p>
+                        <p><strong>Auto-renew:</strong> ${currentSubscription.autoRenew ? 'Enabled' : 'Disabled'}</p>
+                    </div>
+                `;
+                
+                if (promotionCard) {
+                    promotionCard.style.display = 'none';
+                }
+            } else {
+                details.innerHTML = `
+                    <div class="mb-3">
+                        <p><strong>Current Plan:</strong> <span class="badge-free">FREE</span></p>
+                        <p>You are currently on the Free plan with basic features.</p>
+                    </div>
+                `;
+                
+                if (promotionCard) {
+                    promotionCard.style.display = 'block';
+                }
+            }
+        }
+
+        // Show subscription modal
+        function showSubscriptionModal() {
+            if (!currentUser) return;
+            
+            const modalContent = document.getElementById('subscriptionModalContent');
+            
+            if (currentUser.plan === 'premium') {
+                const daysRemaining = calculateDaysRemaining(currentUser.subscriptionEndDate);
+                const endDate = currentUser.subscriptionEndDate ? formatDate(currentUser.subscriptionEndDate) : 'N/A';
+                
+                modalContent.innerHTML = `
+                    <div class="subscription-info">
+                        <h5><i class="fas fa-crown me-2"></i>Premium Subscription Details</h5>
+                        <div class="mb-3">
+                            <p><strong>Plan:</strong> Premium</p>
+                            <p><strong>Valid Until:</strong> ${endDate}</p>
+                            <p><strong>Days Remaining:</strong> ${daysRemaining} day(s)</p>
+                            <p><strong>Auto-renew:</strong> ${currentSubscription.autoRenew ? 'Enabled' : 'Disabled'}</p>
+                        </div>
+                        
+                        <h6>Premium Features:</h6>
+                        <ul>
+                            <li><i class="fas fa-check text-success me-2"></i>Upload drama posters</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Mood journal</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Advanced analytics</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Custom themes</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Cloud sync</li>
+                        </ul>
+                    </div>
+                `;
+            } else {
+                modalContent.innerHTML = `
+                    <div class="text-center">
+                        <i class="fas fa-crown fa-4x text-warning mb-3"></i>
+                        <h5>Free Plan</h5>
+                        <p>You are currently on the Free plan.</p>
+                        
+                        <div class="alert alert-info">
+                            <h6>Upgrade to Premium for:</h6>
+                            <ul class="mb-0">
+                                <li>Upload drama posters</li>
+                                <li>Mood journal</li>
+                                <li>Advanced analytics</li>
+                                <li>Custom themes</li>
+                                <li>Cloud sync</li>
+                            </ul>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            // Show modal (you need to add this modal to your HTML)
+            const modal = new bootstrap.Modal(document.getElementById('subscriptionModal'));
+            modal.show();
+        }
+
+        // Downgrade to free
+        function downgradeToFree() {
+            if (currentUser.plan === 'free') {
+                alert('You are already on the Free plan.');
+                return;
+            }
+            
+            // Show confirmation modal (you need to add this modal to your HTML)
+            const modal = new bootstrap.Modal(document.getElementById('confirmDowngradeModal'));
+            modal.show();
+        }
+
+        // Confirm downgrade
+        function confirmDowngrade() {
+            if (downgradeUserToFree()) {
+                alert('Successfully downgraded to Free plan. Premium features have been disabled.');
+                bootstrap.Modal.getInstance(document.getElementById('confirmDowngradeModal')).hide();
+                
+                // Refresh UI
+                renderHome();
+                renderWatchlog();
+                renderCategories();
+                renderReviews();
+                renderProfile();
+            }
+        }
+
+        // ==================== DRAMA FUNCTIONS ====================
+
+        // Default poster image (Base64 encoded)
+        const defaultPosterImage = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjQwMCIgdmlld0JveD0iMCAwIDMwMCA0MDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIzMDAiIGhlaWdodD0iNDAwIiBmaWxsPSIjMTY0NzZBIi8+Cjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTYiIGZpbGw9IndoaXRlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkeT0iLjNlbSI+Tk8gSU1BR0U8L3RleHQ+Cjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTIiIGZpbGw9IndoaXRlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkeT0iMS4yZW0iPktEIERyYW1hIFBvc3RlcjwvdGV4dD4KPC9zdmc+';
+
+        // Sample drama data for import (with Base64 images)
+        const sampleDramaData = [
+            {
+                id: generateId(), 
+                title: "The Trauma Code: Heroes On Call", 
+                year: 2025, 
+                status: "completed", 
+                episode: 16, 
+                currentEp: 16, 
+                rating: 5, 
+                genre: ["Medical", "Drama"], 
+                review: "Drama medis yang sangat menyentuh!", 
+                poster: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoGVpZ2h0PSI0MDAiIHZpZXdCb3g9IjAgMCAzMDAgNDAwIiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxyZWN0IHdpZHRoPSIzMDAiIGhlaWdodD0iNDAwIiBmaWxsPSIjMTY0NzZBIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNiIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5UUkFVREEgQ09ERTwvdGV4dD48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjEyIiBmaWxsPSJ3aGl0ZSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9IjEuMmVtIj5NZWRpY2FsIERyYW1hPC90ZXh0Pjwvc3ZnPg==',
+                media: [], 
+                mood: "inspired"
+            },
+            {
+                id: generateId(), 
+                title: "Bon Appétit, Your Majesty", 
+                year: 2025, 
+                status: "completed", 
+                episode: 12, 
+                currentEp: 12, 
+                rating: 4, 
+                genre: ["Historical", "Romance"], 
+                review: "Kombinasi kuliner dan kerajaan yang unik!", 
+                poster: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjQwMCIgdmlld0JveD0iMCAwIDMwMCA0MDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjMwMCIgaGVpZ2h0PSI0MDAiIGZpbGw9IiMyOGE3NDUiLz48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE0IiBmaWxsPSJ3aGl0ZSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkJPTiBBUFBFVElUPC90ZXh0Pjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTIiIGZpbGw9IndoaXRlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkeT0iMS4yZW0iPkhpc3RvcmljYWwgUm9tYW5jZTwvdGV4dD48L3N2Zz4=',
+                media: [], 
+                mood: "happy"
+            },
+            {
+                id: generateId(), 
+                title: "Newtopia", 
+                year: 2025, 
+                status: "completed", 
+                episode: 10, 
+                currentEp: 10, 
+                rating: 5, 
+                genre: ["Thriller", "Sci-Fi"], 
+                review: "Cerita zombie yang fresh dan menegangkan!", 
+                poster: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjQwMCIgdmlld0JveD0iMCAwIDMwMCA0MDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjMwMCIgaGVpZ2h0PSI0MDAiIGZpbGw9IiNGRjU1NUEiLz48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE4IiBmaWxsPSJ3aGl0ZSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPk5FV1RPUElBPC90ZXh0Pjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTIiIGZpbGw9IndoaXRlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkeT0iMS4yZW0iPlpvbWJpZSBUaHJpbGxlcjwvdGV4dD48L3N2Zz4=',
+                media: [], 
+                mood: "excited"
+            }
+        ];
+
+        // Preview poster image
+        function previewPosterImage(event) {
+            const file = event.target.files[0];
+            const preview = document.getElementById('posterPreview');
+            
+            if (!file) {
+                preview.innerHTML = `
+                    <div class="text-center text-muted">
+                        <i class="fas fa-image fa-3x mb-2"></i><br>
+                        <span>Click to upload poster image</span>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Check file size (max 2MB)
+            if (file.size > 2 * 1024 * 1024) {
+                alert('File size too large! Maximum size is 2MB.');
+                event.target.value = '';
+                return;
+            }
+            
+            // Check file type
+            if (!file.type.startsWith('image/')) {
+                alert('Please upload an image file!');
+                event.target.value = '';
+                return;
+            }
+            
+            convertImageToBase64(file, function(base64) {
+                preview.innerHTML = `<img src="${base64}" alt="Preview">`;
+            });
+        }
+
+        // Import sample data
+        function importSampleData() {
+            if (confirm('Import sample drama data? This will add 3 sample dramas to your collection.')) {
+                const existingIds = currentUserDramas.map(d => d.title);
+                const newDramas = sampleDramaData.filter(d => !existingIds.includes(d.title));
+                
+                if (newDramas.length > 0) {
+                    currentUserDramas.push(...newDramas);
+                    saveUserDramas(currentUser.id, currentUserDramas);
+                    
+                    // Reload all views
+                    renderHome();
+                    renderWatchlog();
+                    renderCategories();
+                    renderReviews();
+                    updateStats();
+                    renderProfile();
+                    
+                    alert(`${newDramas.length} sample dramas imported successfully!`);
+                } else {
+                    alert('All sample dramas already exist in your collection.');
+                }
+            }
+        }
+
+        // Render Home
+        function renderHome() {
+            if (!currentUser) return;
+            
+            const container = document.getElementById('homeCards');
+            container.innerHTML = '';
+            
+            // Show recent 6 dramas
+            const recentDramas = [...currentUserDramas].sort((a, b) => b.id.localeCompare(a.id)).slice(0, 6);
+            
+            if (recentDramas.length === 0) {
+                container.innerHTML = `
+                    <div class="col-12 text-center">
+                        <div class="card">
+                            <div class="card-body py-5">
+                                <i class="fas fa-tv fa-4x mb-3 text-muted"></i>
+                                <h4>No dramas yet</h4>
+                                <p class="text-muted">Start tracking your K-Drama journey!</p>
+                                <button class="btn btn-primary" onclick="openAddDramaModal()">
+                                    <i class="fas fa-plus"></i> Add Your First Drama
+                                </button>
+                                <button class="btn btn-outline-primary ms-2" onclick="importSampleData()">
+                                    <i class="fas fa-download"></i> Import Sample Data
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+            
+            recentDramas.forEach(drama => {
+                const progress = (drama.currentEp / drama.episode) * 100;
+                const statusClass = drama.status === 'completed' ? 'status-completed' : 
+                                   drama.status === 'watching' ? 'status-watching' : 'status-plan';
+                const statusText = drama.status === 'completed' ? 'Completed' : 
+                                  drama.status === 'watching' ? 'Watching' : 'Plan to Watch';
+                
+                container.innerHTML += `
+                    <div class="col-md-6 col-lg-4">
+                        <div class="drama-card" onclick="openDramaModal('${drama.id}')">
+                            <img src="${drama.poster}" alt="${drama.title}">
+                            <div class="card-body">
+                                <span class="status-badge ${statusClass}">${statusText}</span>
+                                <h5 class="card-title">${drama.title}</h5>
+                                ${drama.genre.map(g => `<span class="genre-tag">${g}</span>`).join('')}
+                                <div class="progress mt-3">
+                                    <div class="progress-bar bg-success" style="width: ${progress}%"></div>
+                                </div>
+                                <p class="mt-2 mb-2"><small>Episode ${drama.currentEp}/${drama.episode}</small></p>
+                                <div class="rating">
+                                    ${'★'.repeat(drama.rating)}${'☆'.repeat(5-drama.rating)}
+                                </div>
+                                ${drama.mood && currentUser.plan === 'premium' ? `<p class="mt-1"><small>Mood: ${getMoodEmoji(drama.mood)} ${drama.mood}</small></p>` : ''}
+                                <p class="mt-2"><small>${drama.review ? drama.review.substring(0, 100) + '...' : 'No review yet'}</small></p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        // Get mood emoji
+        function getMoodEmoji(mood) {
+            const moodEmojis = {
+                'happy': '😊',
+                'sad': '😢',
+                'excited': '🤩',
+                'inspired': '💡',
+                'relaxed': '😌',
+                'emotional': '🥺'
+            };
+            return moodEmojis[mood] || '';
+        }
+
+        // Render Watchlog
+        function renderWatchlog() {
+            const completed = currentUserDramas.filter(d => d.status === 'completed');
+            const watching = currentUserDramas.filter(d => d.status === 'watching');
+            const plan = currentUserDramas.filter(d => d.status === 'plan');
+
+            renderWatchlogSection('completedList', completed);
+            renderWatchlogSection('watchingList', watching);
+            renderWatchlogSection('planList', plan);
+        }
+
+        function renderWatchlogSection(containerId, dramas) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+            
+            if (dramas.length === 0) {
+                container.innerHTML = `<div class="text-center text-muted p-4">No dramas in this category</div>`;
+                return;
+            }
+            
+            dramas.forEach(drama => {
+                const progress = (drama.currentEp / drama.episode) * 100;
+                container.innerHTML += `
+                    <div class="scroll-card drama-card" onclick="openDramaModal('${drama.id}')">
+                        <img src="${drama.poster}" alt="${drama.title}">
+                        <div class="card-body">
+                            <h6 class="card-title">${drama.title}</h6>
+                            ${drama.genre.map(g => `<span class="genre-tag">${g}</span>`).join('')}
+                            <p class="mb-1"><small>${drama.year} • ${drama.episode} eps</small></p>
+                            <div class="progress mt-2">
+                                <div class="progress-bar bg-success" style="width: ${progress}%"></div>
+                            </div>
+                            <p class="mt-1"><small>${drama.currentEp}/${drama.episode}</small></p>
+                            <div class="rating">
+                                ${'★'.repeat(drama.rating)}${'☆'.repeat(5-drama.rating)}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        // Filter Watchlog
+        function filterWatchlog(filter) {
+            const buttons = document.querySelectorAll('#watchlog .btn-group .btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // Implementation would filter the watchlog view
+            // For now, we'll just re-render the watchlog
+            renderWatchlog();
+        }
+
+        // Render Categories
+        function renderCategories(filter = 'all') {
+            const container = document.getElementById('categoriesCards');
+            container.innerHTML = '';
+            
+            let filtered = currentUserDramas;
+            if (filter !== 'all') {
+                filtered = currentUserDramas.filter(d => d.year === filter);
+            }
+            
+            if (filtered.length === 0) {
+                container.innerHTML = `
+                    <div class="col-12 text-center">
+                        <div class="card">
+                            <div class="card-body py-5">
+                                <i class="fas fa-search fa-3x mb-3 text-muted"></i>
+                                <h4>No dramas found</h4>
+                                <p class="text-muted">${filter === 'all' ? 'Add some dramas to get started!' : `No dramas from ${filter}`}</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+            
+            filtered.forEach(drama => {
+                const progress = (drama.currentEp / drama.episode) * 100;
+                const statusClass = drama.status === 'completed' ? 'status-completed' : 
+                                   drama.status === 'watching' ? 'status-watching' : 'status-plan';
+                const statusText = drama.status === 'completed' ? 'Completed' : 
+                                  drama.status === 'watching' ? 'Watching' : 'Plan to Watch';
+                
+                container.innerHTML += `
+                    <div class="col-md-6 col-lg-3 drama-item" data-title="${drama.title.toLowerCase()}">
+                        <div class="drama-card" onclick="openDramaModal('${drama.id}')">
+                            <img src="${drama.poster}" alt="${drama.title}">
+                            <div class="card-body">
+                                <span class="status-badge ${statusClass}">${statusText}</span>
+                                <h6 class="card-title">${drama.title}</h6>
+                                ${drama.genre.map(g => `<span class="genre-tag">${g}</span>`).join('')}
+                                <p class="mb-1"><small>${drama.year}</small></p>
+                                <div class="progress mt-2">
+                                    <div class="progress-bar bg-success" style="width: ${progress}%"></div>
+                                </div>
+                                <p class="mt-1"><small>${drama.currentEp}/${drama.episode}</small></p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        // Render Reviews
+        function renderReviews() {
+            const container = document.getElementById('reviewsList');
+            container.innerHTML = '';
+            
+            const reviewed = currentUserDramas.filter(d => d.review && d.review.trim() !== '');
+            
+            if (reviewed.length === 0) {
+                container.innerHTML = `
+                    <div class="col-12 text-center">
+                        <div class="card">
+                            <div class="card-body py-5">
+                                <i class="fas fa-comment fa-3x mb-3 text-muted"></i>
+                                <h4>No reviews yet</h4>
+                                <p class="text-muted">Write reviews for your watched dramas</p>
+                                <button class="btn btn-primary" onclick="openAddDramaModal()">
+                                    <i class="fas fa-plus"></i> Add Your First Drama
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+            
+            reviewed.forEach(drama => {
+                container.innerHTML += `
+                    <div class="col-md-6 col-lg-4 mb-4">
+                        <div class="card review-card">
+                            <div class="card-body">
+                                <img src="${drama.poster}" alt="${drama.title}" class="mb-3 rounded" style="height: 200px; object-fit: cover; width: 100%;">
+                                <h5 class="card-title">${drama.title}</h5>
+                                <div class="rating mb-2">
+                                    ${'★'.repeat(drama.rating)}${'☆'.repeat(5-drama.rating)}
+                                </div>
+                                ${drama.mood && currentUser.plan === 'premium' ? `<p class="mb-2"><strong>Mood:</strong> ${getMoodEmoji(drama.mood)} ${drama.mood}</p>` : ''}
+                                <p class="mb-2">${drama.review}</p>
+                                <div class="d-flex gap-2 mt-3">
+                                    <button class="btn btn-sm btn-primary" onclick="openDramaModal('${drama.id}')">
+                                        <i class="fas fa-edit"></i> Edit Review
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        // Render Profile
+        function renderProfile() {
+            if (!currentUser) return;
+            
+            // Calculate favorite genre
+            const genreCount = {};
+            currentUserDramas.forEach(drama => {
+                drama.genre.forEach(genre => {
+                    genreCount[genre] = (genreCount[genre] || 0) + 1;
+                });
+            });
+            
+            let favoriteGenre = '-';
+            let maxCount = 0;
+            for (const genre in genreCount) {
+                if (genreCount[genre] > maxCount) {
+                    maxCount = genreCount[genre];
+                    favoriteGenre = genre;
+                }
+            }
+            
+            // Update stats
+            const total = currentUserDramas.length;
+            const completed = currentUserDramas.filter(d => d.status === 'completed').length;
+            const watching = currentUserDramas.filter(d => d.status === 'watching').length;
+            
+            document.getElementById('profileTotalDramas').textContent = total;
+            document.getElementById('profileCompleted').textContent = completed;
+            document.getElementById('profileWatching').textContent = watching;
+            document.getElementById('profileFavoriteGenre').textContent = favoriteGenre;
+            
+            // Render recent activity
+            const activityContainer = document.getElementById('profileActivity');
+            const recentActivity = [...currentUserDramas]
+                .sort((a, b) => b.id.localeCompare(a.id))
+                .slice(0, 10);
+            
+            if (recentActivity.length === 0) {
+                activityContainer.innerHTML = '<p class="text-muted">No activity yet.</p>';
+            } else {
+                let activityHTML = '';
+                recentActivity.forEach(drama => {
+                    const activityDate = new Date(parseInt(drama.id.substring(0, 8), 36)).toLocaleDateString();
+                    activityHTML += `
+                        <div class="d-flex mb-3">
+                            <div class="flex-shrink-0">
+                                <div class="profile-avatar-small" style="width: 40px; height: 40px; border-radius: 50%; background: ${getRandomColor()}; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">
+                                    ${drama.title.charAt(0)}
+                                </div>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h6>${drama.title}</h6>
+                                <p class="mb-1">
+                                    <span class="badge ${drama.status === 'completed' ? 'bg-success' : drama.status === 'watching' ? 'bg-danger' : 'bg-secondary'}">
+                                        ${drama.status === 'completed' ? 'Completed' : drama.status === 'watching' ? 'Watching' : 'Plan to Watch'}
+                                    </span>
+                                    <span class="ms-2 text-muted">${activityDate}</span>
+                                </p>
+                                <small>${drama.review ? drama.review.substring(0, 100) + '...' : 'No review'}</small>
+                            </div>
+                        </div>
+                    `;
+                });
+                activityContainer.innerHTML = activityHTML;
+            }
+            
+            // Update subscription management card
+            updateSubscriptionManagementCard();
+        }
+
+        // Edit Profile
+        function editProfile() {
+            const firstName = prompt("Enter your first name:", currentUser.firstName);
+            const lastName = prompt("Enter your last name:", currentUser.lastName);
+            
+            if (firstName && lastName) {
+                // Update user in database
+                const users = JSON.parse(localStorage.getItem('ktrack_users'));
+                const userIndex = users.findIndex(u => u.id === currentUser.id);
+                
+                if (userIndex !== -1) {
+                    users[userIndex].firstName = firstName;
+                    users[userIndex].lastName = lastName;
+                    localStorage.setItem('ktrack_users', JSON.stringify(users));
+                    
+                    // Update current user
+                    currentUser.firstName = firstName;
+                    currentUser.lastName = lastName;
+                    
+                    // Update UI
+                    document.getElementById('userName').textContent = `${firstName} ${lastName}`;
+                    document.getElementById('welcomeName').textContent = firstName;
+                    document.getElementById('userAvatar').textContent = firstName.charAt(0) + lastName.charAt(0);
+                    document.getElementById('profileName').textContent = `${firstName} ${lastName}`;
+                    document.getElementById('profileAvatarLarge').textContent = firstName.charAt(0) + lastName.charAt(0);
+                    
+                    alert('Profile updated successfully!');
+                }
+            }
+        }
+
+        // Save Settings
+        function saveSettings() {
+            const emailNotifications = document.getElementById('emailNotifications').checked;
+            const friendRequests = document.getElementById('friendRequests').checked;
+            const privacySetting = document.getElementById('privacySetting').value;
+            
+            const settings = JSON.parse(localStorage.getItem('ktrack_settings'));
+            settings[currentUser.id] = {
+                ...settings[currentUser.id],
+                emailNotifications,
+                friendRequests,
+                privacy: privacySetting
+            };
+            
+            localStorage.setItem('ktrack_settings', JSON.stringify(settings));
+            alert('Settings saved successfully!');
+        }
+
+        // Change Password
+        function changePassword() {
+            const currentPassword = document.getElementById('currentPassword').value;
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmNewPassword = document.getElementById('confirmNewPassword').value;
+            
+            if (!currentPassword || !newPassword || !confirmNewPassword) {
+                alert('Please fill all password fields.');
+                return;
+            }
+            
+            if (newPassword !== confirmNewPassword) {
+                alert('New passwords do not match.');
+                return;
+            }
+            
+            if (newPassword.length < 8) {
+                alert('New password must be at least 8 characters long.');
+                return;
+            }
+            
+            // Verify current password
+            if (!verifyPassword(currentPassword, currentUser.password)) {
+                alert('Current password is incorrect.');
+                return;
+            }
+            
+            // Update password
+            const users = JSON.parse(localStorage.getItem('ktrack_users'));
+            const userIndex = users.findIndex(u => u.id === currentUser.id);
+            
+            if (userIndex !== -1) {
+                users[userIndex].password = hashPassword(newPassword);
+                localStorage.setItem('ktrack_users', JSON.stringify(users));
+                
+                // Update current user
+                currentUser.password = hashPassword(newPassword);
+                
+                // Clear fields
+                document.getElementById('currentPassword').value = '';
+                document.getElementById('newPassword').value = '';
+                document.getElementById('confirmNewPassword').value = '';
+                
+                alert('Password changed successfully!');
+            }
+        }
+
+        // ==================== PAGE NAVIGATION ====================
+
+        // Page Navigation
+        function showPage(page) {
+            // Hide all pages
+            document.querySelectorAll('.page-content').forEach(p => {
+                p.classList.remove('active');
+            });
+            
+            // Show selected page
+            document.getElementById(page).classList.add('active');
+            
+            // Update active nav link
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Load page content
+            if (page === 'home') renderHome();
+            if (page === 'watchlog') renderWatchlog();
+            if (page === 'categories') renderCategories();
+            if (page === 'reviews') renderReviews();
+            if (page === 'profile') renderProfile();
+        }
+
+        // Update Stats
+        function updateStats() {
+            const total = currentUserDramas.length;
+            const completed = currentUserDramas.filter(d => d.status === 'completed').length;
+            const watching = currentUserDramas.filter(d => d.status === 'watching').length;
+            
+            document.getElementById('totalDramas').textContent = total;
+            document.getElementById('completedCount').textContent = completed;
+            document.getElementById('watchingCount').textContent = watching;
+        }
+
+        // Search Drama
+        function searchDrama() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const items = document.querySelectorAll('.drama-item');
+            
+            items.forEach(item => {
+                const title = item.getAttribute('data-title');
+                if (title.includes(query)) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+
+        // Filter by Year
+        function filterByYear(year) {
+            renderCategories(year);
+        }
+
+        // Theme Toggle
+        function toggleTheme() {
+            document.body.classList.toggle('dark-mode');
+            const icon = document.getElementById('themeIcon');
+            if (document.body.classList.contains('dark-mode')) {
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
+                
+                // Save theme preference
+                const settings = JSON.parse(localStorage.getItem('ktrack_settings'));
+                if (settings[currentUser.id]) {
+                    settings[currentUser.id].theme = 'dark';
+                    localStorage.setItem('ktrack_settings', JSON.stringify(settings));
+                }
+            } else {
+                icon.classList.remove('fa-sun');
+                icon.classList.add('fa-moon');
+                
+                // Save theme preference
+                const settings = JSON.parse(localStorage.getItem('ktrack_settings'));
+                if (settings[currentUser.id]) {
+                    settings[currentUser.id].theme = 'light';
+                    localStorage.setItem('ktrack_settings', JSON.stringify(settings));
+                }
+            }
+        }
+
+        // ==================== PREMIUM FEATURES ====================
+
+        // Show upgrade modal
+        function showUpgradeModal() {
+            const modal = new bootstrap.Modal(document.getElementById('upgradeModal'));
+            modal.show();
+        }
+
+        // Upgrade to premium
+        function upgradeToPremium() {
+            const duration = parseInt(document.getElementById('subscriptionDuration').value);
+            const pricePerMonth = 49999;
+            const totalPrice = pricePerMonth * duration;
+            
+            let message = `Upgrade to Premium plan for ${duration} month(s) (Rp ${totalPrice.toLocaleString('id-ID')})?\n\n`;
+            message += `Benefits:\n`;
+            message += `• Cloud sync across devices\n`;
+            message += `• Mood & reflection journal\n`;
+            message += `• Upload photos/videos\n`;
+            message += `• Advanced analytics\n`;
+            message += `• Custom themes\n`;
+            message += `• Private notes with security\n\n`;
+            message += `Subscription will be active for ${duration} month(s) from today.`;
+            
+            if (confirm(message)) {
+                // Calculate new end date
+                const now = new Date();
+                let newEndDate = new Date(currentUser.subscriptionEndDate || now);
+                
+                // If already premium, extend from current end date
+                // If free, start from today
+                if (currentUser.plan !== 'premium' || newEndDate < now) {
+                    newEndDate = now;
+                }
+                
+                newEndDate.setMonth(newEndDate.getMonth() + duration);
+                
+                // Update user in database
+                const users = JSON.parse(localStorage.getItem('ktrack_users'));
+                const userIndex = users.findIndex(u => u.id === currentUser.id);
+                
+                if (userIndex !== -1) {
+                    users[userIndex].plan = 'premium';
+                    users[userIndex].subscriptionEndDate = newEndDate.toISOString();
+                    localStorage.setItem('ktrack_users', JSON.stringify(users));
+                    
+                    // Update subscription record
+                    const subscriptions = JSON.parse(localStorage.getItem('ktrack_subscriptions'));
+                    if (!subscriptions[currentUser.id]) {
+                        subscriptions[currentUser.id] = {
+                            plan: 'premium',
+                            startDate: now.toISOString(),
+                            endDate: newEndDate.toISOString(),
+                            autoRenew: false,
+                            paymentHistory: []
+                        };
+                    } else {
+                        subscriptions[currentUser.id].plan = 'premium';
+                        subscriptions[currentUser.id].endDate = newEndDate.toISOString();
+                        subscriptions[currentUser.id].autoRenew = false;
+                    }
+                    
+                    // Add payment to history
+                    subscriptions[currentUser.id].paymentHistory.push({
+                        date: now.toISOString(),
+                        amount: totalPrice,
+                        duration: duration,
+                        type: currentUser.plan === 'premium' ? 'renewal' : 'upgrade'
+                    });
+                    
+                    localStorage.setItem('ktrack_subscriptions', JSON.stringify(subscriptions));
+                    
+                    // Update current user
+                    currentUser.plan = 'premium';
+                    currentUser.subscriptionEndDate = newEndDate.toISOString();
+                    currentSubscription = getUserSubscription(currentUser.id);
+                    
+                    // Update UI
+                    updatePlanBadge();
+                    renderSubscriptionInfoBars();
+                    renderProfile();
+                    
+                    // Close modal
+                    bootstrap.Modal.getInstance(document.getElementById('upgradeModal')).hide();
+                    
+                    alert(`Congratulations! You are now a Premium member for ${duration} month(s). Enjoy all premium features!\n\nYour subscription is valid until ${formatDate(newEndDate)}`);
+                    
+                    // Refresh views to show premium features
+                    renderHome();
+                    renderWatchlog();
+                    renderCategories();
+                    renderReviews();
+                }
+            }
+        }
+
+        // Preview premium feature
+        function previewPremiumFeature() {
+            if (currentUser.plan !== 'premium') {
+                showUpgradeModal();
+            }
+        }
+
+        // ==================== INITIALIZATION ====================
+
+        // Initialize database and check for remembered user
+        window.onload = function() {
+            initDatabase();
+            
+            // Check for remembered user
+            const rememberedEmail = localStorage.getItem('ktrack_remembered');
+            if (rememberedEmail) {
+                document.getElementById('loginEmail').value = rememberedEmail;
+                document.getElementById('rememberMe').checked = true;
+            }
+            
+            // Show login page by default
+            showLoginPage();
+        };
+    </script>
+</body>
+</html>
